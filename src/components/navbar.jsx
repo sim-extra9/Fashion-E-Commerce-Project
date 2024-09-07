@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { assets } from '../assets/frontend_assets/assets';
 import { NavLink, Link } from 'react-router-dom';
+import { ShopContext } from '../context/ShopContext';
 
 const Navbar = () => {
    const [visible, setVisible] = useState(false);
+
+   const {setShowSearch,showSearch} = useContext(ShopContext);
+
 
    return (
       <>
@@ -12,21 +16,22 @@ const Navbar = () => {
                <img src={assets.logo} alt="Logo" className='w-36' />
             </Link>
             <ul className='hidden sm:flex gap-5 text-sm text-gray-700'>
-               {['Home', 'Collection', 'About', 'Contact'].map((item) => (
+               {['home', 'collection', 'about', 'contact'].map((item) => (
                   <NavLink
                      key={item}
-                     to={`/${item.toLowerCase()}`}
-                     className='flex flex-col items-center gap-1'
-                     activeClassName="text-black"
+                     to={item === 'home' ? '/' : `/${item.toLowerCase()}`}                     
+                     className={({ isActive }) => 
+                        isActive ? 'text-black' : 'flex flex-col items-center gap-1'
+                     }
                   >
-                     <p>{item}</p>
+                     <p>{item.charAt(0).toUpperCase() + item.slice(1)}</p>
                      <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
                   </NavLink>
                ))}
             </ul>
 
             <div className="flex items-center gap-6">
-               <img src={assets.search_icon} alt="Search" className='w-5 cursor-pointer' />
+               <img onClick={()=>setShowSearch(!showSearch)} src={assets.search_icon} alt="Search" className='w-5 cursor-pointer' />
                <div className="group relative">
                   <img src={assets.profile_icon} alt="Profile" className='w-5 cursor-pointer' />
                   <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
@@ -52,14 +57,14 @@ const Navbar = () => {
                   <img src={assets.dropdown_icon} alt="Back" className='h-4 rotate-180' />
                   <p>Back</p>
                </div>
-               {['Home', 'Collection', 'About', 'Contact'].map((item) => (
+               {['home', 'collection', 'about', 'contact'].map((item) => (
                   <NavLink
                      key={item}
                      onClick={() => setVisible(false)}
                      className='py-2 pl-6 border'
-                     to={`/${item.toLowerCase()}`}
+                     to={`/${item}`}
                   >
-                     {item}
+                     {item.charAt(0).toUpperCase() + item.slice(1)}
                   </NavLink>
                ))}
             </div>
